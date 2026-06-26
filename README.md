@@ -10,7 +10,7 @@ Most obfuscation is not as strong as it looks once you start tracing it properly
 
 ## Structure
 
-  example/
+ ``` example/
     original_obfuscated.lua
 
   walkthrough/
@@ -18,7 +18,7 @@ Most obfuscation is not as strong as it looks once you start tracing it properly
     02_analysis.md
     03_deobfuscation.md
     04_cleanup.md
-
+```
 
 ## How to use
 
