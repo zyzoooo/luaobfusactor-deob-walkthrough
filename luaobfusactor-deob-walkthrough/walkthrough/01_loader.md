@@ -1,59 +1,99 @@
-# 01 - Spot the LuaObfusactor loader
+# 01 - Spot the LuaObfusactor Loader
 
-The sample starts with a long chain of locals like:
+The first step is recognizing that the file is not the real script yet.
 
-`local v0 = tonumber; local v1 = string.byte; local v2 = string.char ...`
+What you are looking at is a **loader layer**, not actual gameplay or logic.
 
-This is not normal Lua style. It is a classic LuaObfusactor pattern used to flatten readability and hide standard library usage behind renamed references.
+---
 
-At this stage, the file is not the real logic yet. It is a loader layer.
+## What it looks like
 
-## What this layer is doing
+You will usually see something like:
 
-This wrapper typically exists to:
+```lua
+local v0 = tonumber
+local v1 = string.byte
+local v2 = string.char
+local v3 = string.sub
+...
+```
 
-- Rename core Lua functions into short local variables
-- Break static analysis by removing obvious function calls
-- Store the actual payload in an encoded string
-- Reconstruct and execute the payload at runtime
+At first glance it looks messy, but it is very structured.
 
-So instead of seeing logic directly, you are looking at a controlled decoder.
+---
 
-## Execution flow (what actually happens)
+## What this layer actually is
 
-1. Local aliases are created for Lua functions
-2. The script defines helper functions for decoding
-3. An encoded string is stored (usually large and unreadable)
-4. That string is transformed back into Lua code
-5. The result is passed into `loadstring` or an equivalent execution function
+This section is a **setup environment** created by LuaObfusactor.
 
-At runtime, this file behaves like a loader, not a script.
+It exists to:
 
-## Key indicator in this sample
+### 1. Rename Lua functions
 
-The biggest giveaway is the `LOL!` marker embedded near the end of the script.
+Core Lua functions get shortened into meaningless variables:
 
-That marker is typically used as a delimiter for the encoded payload section in LuaObfusactor outputs.
+- `string.byte` → `v1`
+- `string.char` → `v2`
+- `tonumber` → `v0`
 
-Once you see that, everything above it is just setup logic.
+This removes readability on purpose.
 
-## What to look for
+---
 
-Focus on these patterns:
+### 2. Break static reading
 
-- `loadstring`
-- `HttpGet` or external fetch calls
-- `v15("LOL!...")` or similar wrapper calls
-- long encoded strings (base64-like or custom encoded blobs)
-- repeated `local vN` variable aliasing
+Instead of seeing:
 
-## Next step
+```lua
+string.sub
+```
 
-Once the `LOL!` payload section is found, the goal is to:
+You only see:
 
-- extract the encoded string cleanly
-- identify the decoding function used
-- manually replicate or simplify the decoder
-- print or dump the final decoded output instead of executing it
+```lua
+v3
+```
 
-That decoded output is the real script
+So you cannot easily understand what is being used.
+
+---
+
+### 3. Prepare decoding tools
+
+These renamed functions are reused later to decode hidden data.
+
+So this section is basically building a “toolkit” for the rest of the script.
+
+---
+
+## How to instantly recognize it
+
+You are still in the loader if you see:
+
+- many `local vN = ...`
+- no real game or UI logic
+- no visible functions like `AutoFarm` or `UI`
+- long encoded strings near the bottom
+- execution calls like `loadstring`
+
+---
+
+## Key idea
+
+If you are seeing this section:
+
+You are NOT at the real script yet.
+
+You are only at the **mask layer** that hides it.
+
+---
+
+## What comes next
+
+After this section, the script will usually contain:
+
+- an encoded payload
+- a marker like `LOL!`
+- or a large compressed string
+
+That is where actual decoding begins.
