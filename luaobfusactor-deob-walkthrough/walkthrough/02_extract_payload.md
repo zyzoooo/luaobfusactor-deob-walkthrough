@@ -1,57 +1,121 @@
-# 02 - Extract the LuaObfusactor payload
+# 02 - Extract the LuaObfusactor Payload
 
-At this stage, the loader has already been identified and the next step is isolating the actual encoded payload hidden inside it.
+Once the loader is identified, the next step is isolating the real encoded data hidden inside it.
 
-LuaObfusactor typically stores the real script in a compact repeat-based + hex-encoded stream. It is not random encoding. It follows a strict pattern designed to compress and disguise bytecode.
+This is where the actual script is stored, but it is still not readable yet.
 
-## How the encoding works
+---
 
-The payload begins immediately after the `LOL!` marker and is processed sequentially.
+## Where the payload is found
 
-The decoding logic works like this:
+In most LuaObfusactor samples, the payload appears after a marker such as:
 
-1. Remove everything before and including the `LOL!` marker
-2. Read the remaining string from left to right in chunks
-3. Each chunk is interpreted in one of two ways:
+```text
+LOL!
+```
 
-### Repeat mode
-- If a character pair matches the pattern `XQ`:
-  - `X` is treated as a repeat count (usually a single hex character or digit)
-  - The last decoded byte is repeated `X` times
+Everything before this is setup code. Everything after is encoded data.
 
-### Hex mode
-- Otherwise, each pair is treated as a hex byte
-- The pair is converted into a single byte value
+---
 
-4. Repeat state persists until a new hex byte is decoded
-5. All decoded bytes are appended to reconstruct the final buffer
+## What the payload actually is
 
-## What this produces
+The payload is a single long string that represents the real script in a hidden format.
 
-The output is not readable Lua yet.
+It is usually:
 
-It is usually one of the following:
+- hex encoded data
+- repeat-compressed bytes
+- or mixed encoding (both together)
 
-- Lua bytecode (`luac` output)
-- A second-stage loader
-- A compressed or packed chunk that still requires `loadstring` or `load`
+---
 
-So even after decoding, execution logic is not fully revealed yet.
+## How decoding works (simple breakdown)
+
+You do NOT need to guess anything. The format is consistent.
+
+### Step 1 - isolate payload
+Remove everything before and including the `LOL!` marker.
+
+---
+
+### Step 2 - read sequentially
+Process the remaining string from left to right.
+
+---
+
+### Step 3 - interpret chunks
+
+There are two main patterns:
+
+#### Hex mode
+Pairs of characters represent bytes:
+
+```text
+4F = 79
+2A = 42
+```
+
+Each pair becomes one byte.
+
+---
+
+#### Repeat mode
+Some sequences indicate repetition:
+
+```text
+XQ
+```
+
+Meaning:
+- `X` = repeat count
+- `Q` = trigger for repeating the previous decoded byte
+
+This allows compression of repeated values.
+
+---
+
+### Step 4 - build output
+All decoded bytes are appended into a buffer.
+
+This produces the real payload data.
+
+---
+
+## What you get after decoding
+
+Even after this step, you usually do NOT get readable Lua.
+
+Instead, you get one of:
+
+- Lua bytecode (`luac`)
+- another encoded layer
+- or a second-stage loader
+
+---
+
+## Key idea
+
+This step does not reveal logic.
+
+It only removes the first layer of hiding.
+
+---
 
 ## Helper script
 
-The script below replicates the decoding process and extracts the raw payload automatically:
+A script can automate this process:
 
 ```bash
 node scripts/extract_payload.js path/to/pasted-text.txt artifacts/decoded.luac
-``` id="8wqk2p"
+```
 
-## Output
+---
 
-The resulting file will appear as binary Lua bytecode.
+## Output warning
 
-It will look corrupted or unreadable in a text editor. That is expected.
+The result will often look like garbage in a text editor.
 
-Do not treat it as text.
+That is expected.
 
-It must be passed into a Lua VM or further unpacked depending on the next stage of obfuscation.
+It is raw byte data, not readable Lua.
