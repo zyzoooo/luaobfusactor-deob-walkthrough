@@ -20,16 +20,6 @@ In this sample, the extracted constants clearly outline the script’s purpose:
 
 These are not random labels. They define the full feature set of the script.
 
-## What this means structurally
-
-From just the string map, you can already classify the script:
-
-- Roblox game automation tool
-- UI-driven toggle system
-- Key-based access gate
-- Multiple gameplay automation modules
-- Performance / anti-idle utilities
-
 At this point, you already understand the script’s *behavior*, even before touching the logic.
 
 ## Why this step matters
