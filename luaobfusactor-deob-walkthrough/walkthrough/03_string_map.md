@@ -1,8 +1,12 @@
 # 03 - Build a string map
 
-After decoding a LuaObfusactor sample, the quickest way to understand the script is to extract readable strings.
+Once the payload has been decoded, the fastest way to understand what the script actually does is to stop looking at structure and start extracting human-readable strings.
 
-In this sample, the constants immediately reveal the shape of the script:
+At this stage, control flow and logic are still noisy, but strings act as anchors. They expose intent immediately.
+
+## What the strings reveal
+
+In this sample, the extracted constants clearly outline the script’s purpose:
 
 - `Midnight Chasers`
 - `Key System`
@@ -14,14 +18,47 @@ In this sample, the constants immediately reveal the shape of the script:
 - `FPS Booster`
 - `Server Hop`
 
-That tells you the program is a Roblox UI script with gameplay toggles, quality-of-life features, and a key gate.
+These are not random labels. They define the full feature set of the script.
+
+## What this means structurally
+
+From just the string map, you can already classify the script:
+
+- Roblox game automation tool
+- UI-driven toggle system
+- Key-based access gate
+- Multiple gameplay automation modules
+- Performance / anti-idle utilities
+
+At this point, you already understand the script’s *behavior*, even before touching the logic.
+
+## Why this step matters
+
+Obfuscated Lua often hides structure, but it rarely hides intent.
+
+Strings bypass:
+
+- renamed variables
+- virtual machine layers
+- control flow flattening
+
+They give you a direct view of what the script was designed to do.
 
 ## Helper script
 
-`scripts/extract_strings.js` prints printable strings found in the decoded chunk.
+The following tool extracts printable strings from the decoded payload:
 
 ```bash
 node scripts/extract_strings.js artifacts/decoded.luac
-```
+``` id="7nqk3d"
 
-This step is where the high-level behavior becomes obvious.
+## Output usage
+
+Use the output to:
+
+- map features to functions later in the code
+- locate UI construction blocks
+- identify key validation logic
+- find remote calls tied to specific features
+
+This step turns an unreadable blob into a functional feature list
