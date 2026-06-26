@@ -8,17 +8,6 @@ I built this to demonstrate how Lua obfuscation actually falls apart when you kn
 
 Most obfuscation is not as strong as it looks once you start tracing it properly.
 
-## Structure
-
- ``` example/
-    original_obfuscated.lua
-
-  walkthrough/
-    01_overview.md
-    02_analysis.md
-    03_deobfuscation.md
-    04_cleanup.md
-```
 
 ## How to use
 
