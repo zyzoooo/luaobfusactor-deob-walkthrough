@@ -1,12 +1,16 @@
-# 03 - Build a string map
+# 03 - Build a String Map
 
-Once the payload has been decoded, the fastest way to understand what the script actually does is to stop looking at structure and start extracting human-readable strings.
+After decoding the payload, you are still not looking at clean logic yet.
 
-At this stage, control flow and logic are still noisy, but strings act as anchors. They expose intent immediately.
+At this stage, the fastest way to understand the script is not by reading code, but by extracting **strings**.
 
-## What the strings reveal
+Strings act like labels. They reveal intent even when everything else is still obfuscated.
 
-In this sample, the extracted constants clearly outline the script’s purpose:
+---
+
+## What strings show immediately
+
+In this sample, extracted strings already reveal the full feature set:
 
 - `Midnight Chasers`
 - `Key System`
@@ -18,37 +22,80 @@ In this sample, the extracted constants clearly outline the script’s purpose:
 - `FPS Booster`
 - `Server Hop`
 
-These are not random labels. They define the full feature set of the script.
+---
 
-At this point, you already understand the script’s *behavior*, even before touching the logic.
+## What this tells you
 
-## Why this step matters
+Even without understanding the code, you can already classify the script:
 
-Obfuscated Lua often hides structure, but it rarely hides intent.
+### 1. It is feature-based
+Each string represents a toggle or system:
+
+- automation features (Auto Farm, Auto Race, Auto Drive)
+- utility features (FPS Booster, Anti AFK)
+- navigation features (Server Hop)
+- game-specific modifications (No Rubble)
+
+---
+
+### 2. It uses a gated system
+`Key System` strongly indicates access control before features can run.
+
+---
+
+## Why this step is powerful
+
+Obfuscation hides structure, but it rarely hides intent.
 
 Strings bypass:
 
-- renamed variables
-- virtual machine layers
+- variable renaming
 - control flow flattening
+- encoding layers
 
-They give you a direct view of what the script was designed to do.
+They remain visible because the script needs them for UI and logic.
+
+---
+
+## Beginner insight
+
+At this point:
+
+You do NOT know how the script works internally.
+
+But you already know:
+
+- what it does
+- what features exist
+- how it is structured at a high level
+
+That alone is enough to understand most of the program.
+
+---
 
 ## Helper script
 
-The following tool extracts printable strings from the decoded payload:
+This step uses string extraction from the decoded payload:
 
 ```bash
 node scripts/extract_strings.js artifacts/decoded.luac
-``` id="7nqk3d"
+```
 
-## Output usage
+---
 
-Use the output to:
+## What to do with the output
 
-- map features to functions later in the code
-- locate UI construction blocks
-- identify key validation logic
-- find remote calls tied to specific features
+Use the strings to:
 
-This step turns an unreadable blob into a functional feature list
+- map features to code sections later
+- identify UI building blocks
+- locate key system logic
+- find function names tied to features
+
+---
+
+## Key idea
+
+Strings turn an unreadable binary into a feature list.
+
+That feature list becomes your roadmap for the final rebuild.
