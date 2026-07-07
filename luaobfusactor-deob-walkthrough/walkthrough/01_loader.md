@@ -2,7 +2,7 @@
 
 The first step is recognizing that the file is not the real script yet.
 
-What you are looking at is a **loader layer**, not actual gameplay or logic.
+What you are looking at is a **loader layer**, not actual logic.
 
 ---
 
