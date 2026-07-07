@@ -71,8 +71,8 @@ So this section is basically building a “toolkit” for the rest of the script
 You are still in the loader if you see:
 
 - many `local vN = ...`
-- no real game or UI logic
-- no visible functions like `AutoFarm` or `UI`
+- no real logic
+- no visible functions 
 - long encoded strings near the bottom
 - execution calls like `loadstring`
 
